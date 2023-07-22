@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/album/">
+    <link href="/docs/5.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+
+  <style>
+        
+  </style>
+<body>
+  <header>
+    <div class="topnav" id="myTopnav">
+      <a href="/home" class="disable">Sekolah Tinggi JeWePe</a>
+      <a href="/home" class="navigasi">Home</a>
+      <a href="/artikel" class="pembatas disable">|</a>
+      <a href="/artikel" class="navigas1">Artikel</a>
+      <a href="/login" class="btn btn-primary">Login</a>
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+  </header>
+
+    <main>
+      <!-- Search -->
+        <section class="py-3 text-center container">
+                <form action="/artikel/search" method="post">
+                  <h1 class="fw-light mt-5">Search Artikel</h1>
+                    <div class="search input-group pt-3 align-items-center">
+                      <input type="text" class="" placeholder="Cari Artikel" name="searchArtikel" style="margin-left: 25%; width: 50%; height: 20;">
+                      <button class="btn-primary" type="submit" id="search">Search</button>
+                      <!-- <a href="/artikel/search" class="btn btn-primary text-light btn-sm" type="submit" id="search">Search</a> -->
+                    </div>
+                </form>
+          </section>
+
+          <!-- Artikel  -->
+          <div class="container">
+            <h1 class="text-center mt-5 py-3">Artikel</h1>
+
+            <% for (let artikel of artikels) { %>
+            <div class="card mb-3">
+              <!-- <img src="/uploads/<%= artikel.image %>" class="card-img-top" alt="/uploads/<%= artikel.image %>"> -->
+              <div class="card-body">
+                <h5 class="card-title"><%= artikel.judul %></h5>
+                <p class="card-text"><%= artikel.artikel.substring(0, 150) %> ...</p>
+                <div class="d-flex justify-content-end">
+                  <a href="/artikel-detail/<%= artikel.ID_artikel %>" class="btn btn-primary btn-sm" name ="id">Selengkapnya...</a>
+                </div>
+              </div>
+            </div>
+            <% } %>
+          </div>
+    </main>
+
+    <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+          <li class="nav-item"><a href="/home" class="nav-link px-2 text-muted">Home</a></li>
+          <li class="nav-item"><a href="/artikel" class="nav-link px-2 text-muted">Artikel</a></li>
+        </ul>
+        <p class="text-center text-muted">© 2023 Ilham Oktavian</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="/script/navbar.js"></script>
+</body>
+</html>

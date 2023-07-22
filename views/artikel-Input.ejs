@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Input Page</title>
+  <link rel="stylesheet" href="../style/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+  <header>
+    <div class="topnav" id="myTopnav">
+      <a href="/home-admin" class="disable">Sekolah Tinggi JeWePe</a>
+      <a href="/home-admin" class="navigasi">Home</a>
+      <a href="/artikel-kelola" class="navigas1">Kelola Artikel</a>
+      <a href="/home" class="btn btn-primary">Logout</a>
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+  </header>
+    
+    <main>
+        <h2 class="text-center mb-4 text-center">Input Page</h2>
+        <div class="container form-login">
+            <div class="row mt-5 justify-content-center">
+            <div class="col-md-6">
+              <form action="/artikel-input" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="judul-artikel">Judul Artikel</label>
+                    <input type="text" class="form-control" name="judul" placeholder="Masukkan Judul Artikel Di Sini" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="foto-artikel">Gambar Artikel</label>
+                  <input type="file" class="form-control" name="image" accept="image/*" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="isi-artikel">Isi Artikel</label>
+                  <textarea class="form-control" rows="12" name="artikel" placeholder="Masukkan Isi Artikel Di Sini" required></textarea>
+                <div class="form-group">
+                 
+                <div class="d-flex justify-content-center">
+                  <button type="submit" class="btn btn-primary mt-3 justify-content-center" id="btnInput">Submit</button>
+                </div>
+              </form>
+            </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+          <li class="nav-item"><a href="./home.html" class="nav-link px-2 text-muted">Home</a></li>
+          <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Artikel</a></li>
+          <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+        </ul>
+        <p class="text-center text-muted">© 2023 Ilham Oktavian</p>
+    </footer>
+
+  <script src="/script/navbar.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

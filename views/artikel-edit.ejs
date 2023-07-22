@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form Edit dengan Bootstrap</title>
+  <!-- Tambahkan link CSS Bootstrap -->
+  <link rel="stylesheet" href="../style/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+  <header>
+    <div class="topnav" id="myTopnav">
+      <a href="/home-admin" class="disable">Sekolah Tinggi JeWePe</a>
+      <a href="/home-admin" class="navigasi">Home</a>
+      <a href="/artikel-kelola" class="navigas1">Kelola Artikel</a>
+      <a href="/home" class="btn btn-primary">Logout</a>
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+  </header>
+
+<main>
+  <!-- FORM EDIT -->
+  <div class="container">
+    <h1 class="text-center">Form Edit</h1>
+    <form action="/artikel-edit" method="post">
+      <% for (let artikelEdit of artikelEdits) { %>
+      <div class="form-group">
+        <label for="nama">Nomer ID</label>
+        <input type="text" class="form-control" id="nama" name="id" value="<%= artikelEdit.ID_artikel %>" disabled>
+      </div>
+      <div class="form-group">
+        <label for="usia">Judul</label>
+        <input type="text" class="form-control" id="usia" name="judul" placeholder="Masukkan Judul Artikel Di Sini" value="<%= artikelEdit.judul %>">
+      </div>
+      <div class="form-group">
+        <label for="kota">Artikel</label>
+        <textarea class="form-control" rows="12" name="artikel" placeholder="Masukkan Isi Artikel Di Sini" value="<%= artikelEdit.judul %>" required> <%= artikelEdit.artikel %> </textarea>
+      </div>
+
+      <div class="d-flex justify-content-end mb-2">
+        <button type="submit" class="btn btn-primary" name="idEdit" value="<%= artikelEdit.ID_artikel %>" onclick="return alert('berhasil update data');">Simpan</button>
+      </div>
+      <% } %>
+    </form>
+  </div>
+
+  <!-- komentar -->
+  <form action="/delete-komentar" method="post">
+    <h2 class="text-center mb-3">komentar</h2>
+    <div class="row">
+      <% for (let komentar of komentars) { %>
+          <div class="card ml-5 mb-4" style="width: 20rem; height: 16rem;">
+            <h6 class="card-title ml-2"><b>ini Nama  : <%= komentar.nama %></b></h6>
+            <h6 class="card-title ml-2" > <b>ini Email  : <%= komentar.email %></b></h6>
+            <p class="card-text border-top mx-2"><%= komentar.komentar %></p>
+              <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-danger btn-sm mr-4" name="id" value="<%= komentar.id %>" onclick="return confirm('Yakin ?');">Hapus</button>
+              </div>
+          </div>
+        <% } %>
+    </div>
+  </form>
+</main>
+
+  <script src="/script/navbar.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

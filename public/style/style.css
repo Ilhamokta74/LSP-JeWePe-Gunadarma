@@ -1,0 +1,82 @@
+.form-login {
+    background-color: rgb(207, 207, 207);
+    width: 40%;
+}
+
+.input-artikel {
+    height: 300px;
+}
+
+.komentar {
+    padding-top: 100px;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  padding: 14px;
+  font-size: 17px;
+}
+
+.topnav a.navigasi {
+	margin-left: 30%;
+}
+
+.topnav a.pembatas {
+	margin: 0;
+}
+
+.topnav a.navigas1 {
+    margin-right: 30%;
+}
+ 
+.topnav a.disable:hover {
+  color: #f2f2f2;
+}
+
+.topnav a:hover {
+  color: black;
+  text-decoration: none;
+}
+
+.topnav .icon {
+  display: none;
+}
+
+@media screen and (max-width: 970px) {
+  .topnav a:not(:first-child) {display: none;}
+  .topnav a.icon {
+    float: right;
+    display: block;
+  }
+  
+  .topnav.responsive {position: relative;}
+  .topnav.responsive .icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .topnav.responsive a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+  
+  .topnav a.navigasi {
+	margin: 0;
+  }
+
+  .topnav a.pembatas {
+    display: none;
+  }
+
+  .topnav a.navigas1 {
+    margin: 0;
+  }
+}
