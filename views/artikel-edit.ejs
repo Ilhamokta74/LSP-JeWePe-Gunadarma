@@ -1,71 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Form Edit dengan Bootstrap</title>
-  <!-- Tambahkan link CSS Bootstrap -->
-  <link rel="stylesheet" href="../style/style.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Artikel - Admin JeWePe</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="/home-admin">
+        <i class="fas fa-graduation-cap me-2"></i>JeWePe Admin
+        <span class="admin-badge ms-2">ADMIN</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="/home-admin">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/artikel-kelola">Kelola Artikel</a></li>
+          <li class="nav-item">
+            <a class="btn btn-outline-light btn-sm px-3" href="/home" onclick="return confirm('Yakin ingin logout?')">
+              <i class="fas fa-sign-out-alt me-1"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-  <header>
-    <div class="topnav" id="myTopnav">
-      <a href="/home-admin" class="disable">Sekolah Tinggi JeWePe</a>
-      <a href="/home-admin" class="navigasi">Home</a>
-      <a href="/artikel-kelola" class="navigas1">Kelola Artikel</a>
-      <a href="/home" class="btn btn-primary">Logout</a>
-      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-        <i class="fa fa-bars"></i>
+  <main class="container py-4">
+    <div class="mb-4">
+      <a href="/artikel-kelola" class="text-decoration-none text-muted">
+        <i class="fas fa-arrow-left me-1"></i> Kembali ke Kelola Artikel
       </a>
     </div>
-  </header>
 
-<main>
-  <!-- FORM EDIT -->
-  <div class="container">
-    <h1 class="text-center">Form Edit</h1>
-    <form action="/artikel-edit" method="post">
-      <% for (let artikelEdit of artikelEdits) { %>
-      <div class="form-group">
-        <label for="nama">Nomer ID</label>
-        <input type="text" class="form-control" id="nama" name="id" value="<%= artikelEdit.ID_artikel %>" disabled>
-      </div>
-      <div class="form-group">
-        <label for="usia">Judul</label>
-        <input type="text" class="form-control" id="usia" name="judul" placeholder="Masukkan Judul Artikel Di Sini" value="<%= artikelEdit.judul %>">
-      </div>
-      <div class="form-group">
-        <label for="kota">Artikel</label>
-        <textarea class="form-control" rows="12" name="artikel" placeholder="Masukkan Isi Artikel Di Sini" value="<%= artikelEdit.judul %>" required> <%= artikelEdit.artikel %> </textarea>
-      </div>
+    <% artikelEdits.forEach(function(artikel) { %>
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4 p-md-5">
+          <h2 class="fw-bold mb-4">
+            <i class="fas fa-edit text-primary me-2"></i>Edit Artikel #<%= artikel.ID_artikel %>
+          </h2>
 
-      <div class="d-flex justify-content-end mb-2">
-        <button type="submit" class="btn btn-primary" name="idEdit" value="<%= artikelEdit.ID_artikel %>" onclick="return alert('berhasil update data');">Simpan</button>
-      </div>
-      <% } %>
-    </form>
-  </div>
+          <% if (artikel.image) { %>
+            <div class="mb-3">
+              <img src="/uploads/<%= artikel.image %>" alt="Current" class="img-thumbnail" style="max-height:160px;">
+            </div>
+          <% } %>
 
-  <!-- komentar -->
-  <form action="/delete-komentar" method="post">
-    <h2 class="text-center mb-3">komentar</h2>
-    <div class="row">
-      <% for (let komentar of komentars) { %>
-          <div class="card ml-5 mb-4" style="width: 20rem; height: 16rem;">
-            <h6 class="card-title ml-2"><b>ini Nama  : <%= komentar.nama %></b></h6>
-            <h6 class="card-title ml-2" > <b>ini Email  : <%= komentar.email %></b></h6>
-            <p class="card-text border-top mx-2"><%= komentar.komentar %></p>
-              <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-danger btn-sm mr-4" name="id" value="<%= komentar.id %>" onclick="return confirm('Yakin ?');">Hapus</button>
+          <form action="/artikel-edit" method="post">
+            <input type="hidden" name="idEdit" value="<%= artikel.ID_artikel %>">
+            <div class="mb-3">
+              <label for="judul" class="form-label fw-medium">Judul Artikel</label>
+              <input type="text" class="form-control form-control-lg" id="judul" name="judul"
+                     value="<%= artikel.judul %>" required>
+            </div>
+            <div class="mb-4">
+              <label for="artikel" class="form-label fw-medium">Isi Artikel</label>
+              <textarea class="form-control" id="artikel" name="artikel" rows="12" required><%= artikel.artikel %></textarea>
+            </div>
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary px-4">
+                <i class="fas fa-save me-1"></i> Simpan Perubahan
+              </button>
+              <a href="/artikel-kelola" class="btn btn-outline-secondary">Batal</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+
+    <!-- Komentar di artikel ini -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h4 class="fw-bold mb-3">
+          <i class="fas fa-comments me-2"></i>Komentar (<%= komentars.length %>)
+        </h4>
+        <% if (komentars.length === 0) { %>
+          <p class="text-muted mb-0">Tidak ada komentar.</p>
+        <% } else { %>
+          <div class="list-group list-group-flush">
+            <% komentars.forEach(function(k) { %>
+              <div class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                <div>
+                  <strong><%= k.nama %></strong>
+                  <span class="text-muted small ms-2"><%= k.email %></span>
+                  <p class="mb-0 mt-1"><%= k.komentar %></p>
+                </div>
+                <form action="/delete-komentar" method="post" onsubmit="return confirm('Hapus komentar ini?')">
+                  <input type="hidden" name="id" value="<%= k.id %>">
+                  <% artikelEdits.forEach(function(a) { %>
+                    <input type="hidden" name="id_artikel" value="<%= a.ID_artikel %>">
+                  <% }) %>
+                  <button type="submit" class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
               </div>
+            <% }) %>
           </div>
         <% } %>
+      </div>
     </div>
-  </form>
-</main>
+  </main>
 
-  <script src="/script/navbar.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <footer class="py-4">
+    <div class="container text-center">
+      <p class="mb-0 small">&copy; 2023–2025 Sekolah Tinggi JeWePe · Admin Panel</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

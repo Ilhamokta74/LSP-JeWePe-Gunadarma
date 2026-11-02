@@ -1,14 +1,14 @@
 {
-  "name": "lsp",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "lsp-jewepe-gunadarma",
+  "version": "2.0.0",
+  "description": "Website Artikel Sekolah Tinggi JeWePe - Project LSP Gunadarma (improved UI & functions)",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "built": "nodemon server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["lsp", "jewepe", "gunadarma", "artikel"],
+  "author": "Ilham Oktavian (improved)",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -16,7 +16,6 @@
     "express": "^4.18.2",
     "multer": "^1.4.5-lts.1",
     "mysql": "^2.18.1",
-    "nodemon": "^2.0.22",
-    "sweetalert2": "^11.7.12"
+    "nodemon": "^2.0.22"
   }
 }

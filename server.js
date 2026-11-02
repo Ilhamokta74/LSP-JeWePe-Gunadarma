@@ -1,286 +1,266 @@
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
-const ejs = require('ejs');
 const multer = require('multer');
-const path = require('path')
+const path = require('path');
 
 const app = express();
 
-app.set('view engine', 'ejs')
-app.set('views', 'views')
-app.use(express.static('./public'));
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Database connection
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',	
-    database: 'jewepe'
-  });
-
-// Set storage engine for uploaded files
-const storage = multer.diskStorage({
-    destination: './public/uploads/',
-    filename: function(req, file, cb) {
-      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
-  });
-  
-  // Initialize multer upload
-  const upload = multer({storage: storage,}).single('image');
-
-
-db.connect((err) => {
-    if (err) throw err
-    console.log('database connection');
-
-        // get all data artikel
-        app.get('/artikel', (req, res) => {
-            const sql = 'SELECT * FROM artikel'
-            db.query(sql, (err, result) => {
-                const artikels = JSON.parse(JSON.stringify(result))
-                res.render('artikel', { artikels: artikels}); 
-                console.log(artikels); 
-            });
-        });
-
-        // untuk kelola artikel (ADMIN)
-        app.get('/artikel-kelola', (req, res) => {
-            const sql = 'SELECT ID_artikel, judul FROM artikel'
-            db.query(sql, (err, result) => {
-                const artikels = JSON.parse(JSON.stringify(result))
-                res.render('artikel-kelola', { artikels: artikels }); 
-                console.log(artikels); 
-            });
-            // res.render("artikel-kelola");
-        });
-        
-        app.get('/artikel-input', (req, res) => {
-            res.render("artikel-input");
-        });
-
-        // ARTIKEL INPUT
-        app.post('/artikel-input', (req, res) => {
-            upload(req, res, (err) => {
-                const { judul, artikel } = req.body;
-
-                const idName = judul.split(' ').join('-');
-                const image = req.file ? req.file.filename : null;
-                const artikelDepan = artikel.substring(0, 100) + ' ...';
-                const insertSql = `INSERT INTO artikel (judul, artikel, idname, image, artikelDepan) VALUES (?, ?, ?, ?, ?);`
-                console.log(insertSql);
-
-                db.query(insertSql,[judul, artikel, idName, image, artikelDepan], (err, result) => {
-                    if (err) throw err
-                    console.log("Alhamdullilah berhasil");
-                    res.redirect('/artikel-kelola');
-                })
-            })
-        });
-
-        // Get Data By IdName
-        // app.get (`/artikel-search/:idname`, (req, res) => {
-        //     const idName = req.body.searchArtikel;
-        //     const artikelSearch = `SELECT * FROM artikel WHERE idname LIKE '%${idName}%'`;
-        //     // const komentar = `SELECT * FROM komentar WHERE ID_artikel = '${id}'`;
-        //     console.log(artikelSearch); 
-        //     // console.log(komentar);
-        //     db.query(artikelSearch, (err, result) => {
-        //         const artikels = JSON.parse(JSON.stringify(result))
-        //         res.render('artikel-search', { artikels: artikels}); 
-        //         console.log(artikels); 
-        //     });
-        // });
-
-        // search
-        app.post (`/artikel/search`, (req, res) => {
-            const searchArtikel = req.body.searchArtikel;
-            const idName = searchArtikel.split(' ').join('-');
-            const artikelSearch = `SELECT * FROM artikel WHERE idname LIKE '%${idName}%'`;
-            // const komentar = `SELECT * FROM komentar WHERE ID_artikel = '${id}'`;
-            console.log(artikelSearch); 
-            // console.log(komentar);
-            db.query(artikelSearch, (err, result) => {
-                const artikels = JSON.parse(JSON.stringify(result))
-                res.render('artikel', { artikels: artikels });
-                console.log(artikels); 
-            });
-            
-            if(searchArtikel === '') {
-                res.redirect('/artikel');
-            }
-        });
-
-        // artikel detail
-        app.get (`/artikel-detail/:id`, (req, res) => {
-            const id = req.params.id;
-            const sql = `SELECT * FROM artikel WHERE ID_artikel = '${id}'`;
-            const komentar = `SELECT * FROM komentar WHERE ID_artikel = '${id}'`;
-            console.log(sql); 
-            db.query(sql, (err, result) => {
-                const getDetails = JSON.parse(JSON.stringify(result))
-                db.query(komentar, (err, result) => {
-                    console.log(komentar);
-                    const komentars = JSON.parse(JSON.stringify(result))
-                    res.render('artikel-detail', { getDetails: getDetails, komentars: komentars});
-                    console.log(komentars); 
-                }); 
-                console.log(getDetails); 
-            });
-        });
-
-        // Insert Komentar
-        app.post('/input-komentar', (req, res) => {
-            const id = req.body.id;
-            const komentarNama = req.body.komentarNama;
-            const komentarEmail = req.body.komentarEmail;
-            const  komentar = req.body.komentar;
-
-            const insertKomentar = `INSERT INTO komentar (ID_artikel, nama, email, komentar) VALUES (
-                '${id}',
-                '${komentarNama}',
-                '${komentarEmail}',
-                '${komentar}'
-            );`
-            db.query(insertKomentar, (err, result) => {
-                if (err) throw err
-                console.log("Alhamdullilah komentarnya berhasil");
-                res.redirect(`/artikel-detail/${id}`)
-            })
-        });
-
-        // akses halaman
-        app.get('/login', (req, res) => {
-            res.render("login");
-        });
-
-        // login Authentication
-        app.post('/login', (req, res) => {
-            const email = req.body.email;
-            const password = req.body.password;
-
-            const loginSql = `SELECT * FROM akun WHERE email = '${email}'`;
-            console.log(loginSql)
-            console.log(email, password);
-
-            db.query(loginSql, (err, result) => {
-                const loginSqls = JSON.parse(JSON.stringify(result))
-                // res.render('artikel-search', { artikels: artikels}); 
-                console.log(loginSqls); 
-
-                for (let login of loginSqls) {
-                    if(login.email === email && login.password === password) {
-                        console.log('masuk nih email sama passwordnya')
-                        // alert('masuk nih email sama passwordnya')
-                        setTimeout(() => {
-                            res.redirect('/home-admin');
-                          }, 2000);
-                    } else {
-                        console.log('yah gagal login');
-                        // alert('yah gagal login');
-                    }
-                }
-            })
-        });
-
-        // EDIT artikel
-        app.get ('/artikel-edit/:id', (req, res) => {
-            const id = req.params.id;
-            const artikelEdit = `SELECT * FROM artikel WHERE ID_artikel = '${id}'`;
-            const komentar = `SELECT * FROM komentar WHERE ID_artikel = '${id}'`;
-            console.log(artikelEdit); 
-            console.log(komentar);
-            db.query(artikelEdit, (err, result) => {
-                const artikelEdits = JSON.parse(JSON.stringify(result))
-                db.query(komentar, (err, result) => {
-                    const komentars = JSON.parse(JSON.stringify(result))
-                    res.render('artikel-edit', { artikelEdits: artikelEdits, komentars: komentars });
-                    console.log(komentars); 
-                }); 
-                // res.render('artikel-edit', { artikelEdits: artikelEdits, komentars: komentars });
-                console.log(artikelEdits); 
-            });
-            // res.render('artikel-edit');
-        })
-
-
-        // Edit data ke database
-        app.post ('/artikel-edit', (req, res) => {
-            const id = req.body.idEdit;
-            const judul = req.body.judul;
-            const artikel = req.body.artikel;
-            const artikelEditSave = `UPDATE artikel SET judul = '${judul}', artikel = '${artikel}' WHERE ID_artikel = '${id}'`;
-            console.log(artikelEditSave); 
-            // res.redirect('/artikel-kelola');
-            db.query(artikelEditSave, (err, result) => {
-                const artikelEditSaves = JSON.parse(JSON.stringify(result))
-                res.redirect(`/artikel-edit/${id}`);
-                // res.redirect('/artikel-kelola');
-                console.log(artikelEditSaves); 
-            });
-            // res.render('artikel-edit');
-        })
-
-        // delete artikel
-        app.post (`/artikel-delete`, (req, res) => {
-            const id = req.body.id;
-            // console.log(id_artikel);
-            const btnDelete = `DELETE FROM artikel WHERE ID_artikel = '${id}'`;
-            const komentarDelete = `DELETE FROM komentar WHERE ID_artikel = '${id}'`;
-            console.log(btnDelete); 
-            console.log(komentarDelete);
-            db.query(btnDelete, (err, result) => {
-                const btnDeletes = JSON.parse(JSON.stringify(result))
-                db.query(komentarDelete, (err, result) => {
-                    const komentarDeletes = JSON.parse(JSON.stringify(result))
-                    console.log(komentarDeletes); 
-                }); 
-                console.log(btnDeletes); 
-                res.redirect('/artikel-kelola');
-            });
-        });
-
-        // DELETE komentar
-        app.post (`/delete-komentar`, (req, res) => {
-            const id = req.body.id;
-            const komentarDeleteq = `DELETE FROM komentar WHERE id = '${id}'`; 
-            const komentarDelete = `SELECT * FROM komentar WHERE id = '${id}'`; 
-            console.log(komentarDelete);
-                db.query(komentarDelete, (err, result) => {
-                    const komentarDeletes = JSON.parse(JSON.stringify(result))
-                    console.log(komentarDeletes); 
-
-                    for (let komentarDelete of komentarDeletes) {
-                        const idnya = komentarDelete.ID_artikel;
-                        console.log(idnya);
-                        setTimeout(() => {
-                            res.redirect(`/artikel-edit/${idnya}`);
-                          }, 1000);
-                    }
-                    db.query(komentarDeleteq, (err, result) => {
-                        const komentarDeleteq = JSON.parse(JSON.stringify(result))
-                        console.log(komentarDeleteq); 
-                    }); 
-                }); 
-                // res.redirect(`/artikel-edit/${id}`);
-
-        });
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'jewepe'
 });
 
+// Multer storage
+const storage = multer.diskStorage({
+  destination: './public/uploads/',
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage: storage }).single('image');
+
+db.connect((err) => {
+  if (err) {
+    console.error('Database connection error:', err.message);
+    console.log('Pastikan MySQL running dan database "jewepe" sudah dibuat + diimport dari jewepe.sql');
+  } else {
+    console.log('Database connected successfully');
+  }
+});
+
+// ========== PUBLIC ROUTES ==========
+
+// Home
 app.get('/', (req, res) => {
-    res.render("home");
+  res.render('home');
 });
 
 app.get('/home', (req, res) => {
-    res.render("home");
+  res.render('home');
 });
+
+// List Artikel
+app.get('/artikel', (req, res) => {
+  const sql = 'SELECT * FROM artikel ORDER BY ID_artikel DESC';
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    }
+    res.render('artikel', { artikels: result || [] });
+  });
+});
+
+// Search Artikel
+app.post('/artikel/search', (req, res) => {
+  const search = (req.body.searchArtikel || '').trim();
+  if (!search) {
+    return res.redirect('/artikel');
+  }
+  const keyword = '%' + search.split(' ').join('%') + '%';
+  const sql = 'SELECT * FROM artikel WHERE judul LIKE ? OR idname LIKE ? OR artikel LIKE ? ORDER BY ID_artikel DESC';
+  db.query(sql, [keyword, keyword, keyword], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    }
+    res.render('artikel', { artikels: result || [], searchQuery: search });
+  });
+});
+
+// Artikel Detail + Komentar
+app.get('/artikel-detail/:id', (req, res) => {
+  const id = req.params.id;
+  const sqlArtikel = 'SELECT * FROM artikel WHERE ID_artikel = ?';
+  const sqlKomentar = 'SELECT * FROM komentar WHERE ID_artikel = ? ORDER BY id DESC';
+
+  db.query(sqlArtikel, [id], (err, artikelResult) => {
+    if (err || !artikelResult || artikelResult.length === 0) {
+      return res.status(404).send('Artikel tidak ditemukan');
+    }
+    db.query(sqlKomentar, [id], (err2, komentarResult) => {
+      if (err2) {
+        console.error(err2);
+        return res.status(500).send('Database error');
+      }
+      res.render('artikel-detail', {
+        getDetails: artikelResult,
+        komentars: komentarResult || []
+      });
+    });
+  });
+});
+
+// Input Komentar
+app.post('/input-komentar', (req, res) => {
+  const { id, komentarNama, komentarEmail, komentar } = req.body;
+  if (!id || !komentarNama || !komentar || !komentarEmail) {
+    return res.redirect(`/artikel-detail/${id || ''}`);
+  }
+  const sql = 'INSERT INTO komentar (ID_artikel, nama, email, komentar) VALUES (?, ?, ?, ?)';
+  db.query(sql, [id, komentarNama, komentarEmail, komentar], (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Gagal menyimpan komentar');
+    }
+    res.redirect(`/artikel-detail/${id}`);
+  });
+});
+
+// Login page
+app.get('/login', (req, res) => {
+  res.render('login', { error: null });
+});
+
+// Login process
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.render('login', { error: 'Email dan password wajib diisi' });
+  }
+  const sql = 'SELECT * FROM akun WHERE email = ? AND password = ?';
+  db.query(sql, [email, password], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.render('login', { error: 'Terjadi kesalahan server' });
+    }
+    if (result && result.length > 0) {
+      return res.redirect('/home-admin');
+    }
+    res.render('login', { error: 'Email atau password salah' });
+  });
+});
+
+// ========== ADMIN ROUTES ==========
 
 app.get('/home-admin', (req, res) => {
-    res.render("home-admin");
+  res.render('home-admin');
 });
 
+// Kelola Artikel
+app.get('/artikel-kelola', (req, res) => {
+  const sql = 'SELECT ID_artikel, judul, image FROM artikel ORDER BY ID_artikel DESC';
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    }
+    res.render('artikel-kelola', { artikels: result || [] });
+  });
+});
+
+// Form Input Artikel
+app.get('/artikel-input', (req, res) => {
+  res.render('artikel-input');
+});
+
+// Proses Input Artikel
+app.post('/artikel-input', (req, res) => {
+  upload(req, res, (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Upload gagal');
+    }
+    const { judul, artikel } = req.body;
+    if (!judul || !artikel) {
+      return res.redirect('/artikel-input');
+    }
+    const idName = judul.trim().toLowerCase().split(/\s+/).join('-');
+    const image = req.file ? req.file.filename : null;
+    const artikelDepan = artikel.substring(0, 120) + (artikel.length > 120 ? ' ...' : '');
+    const sql = 'INSERT INTO artikel (judul, artikel, idname, image, artikelDepan) VALUES (?, ?, ?, ?, ?)';
+    db.query(sql, [judul, artikel, idName, image, artikelDepan], (err2) => {
+      if (err2) {
+        console.error(err2);
+        return res.status(500).send('Gagal menyimpan artikel');
+      }
+      res.redirect('/artikel-kelola');
+    });
+  });
+});
+
+// Form Edit Artikel
+app.get('/artikel-edit/:id', (req, res) => {
+  const id = req.params.id;
+  const sqlArtikel = 'SELECT * FROM artikel WHERE ID_artikel = ?';
+  const sqlKomentar = 'SELECT * FROM komentar WHERE ID_artikel = ? ORDER BY id DESC';
+
+  db.query(sqlArtikel, [id], (err, artikelResult) => {
+    if (err || !artikelResult || artikelResult.length === 0) {
+      return res.status(404).send('Artikel tidak ditemukan');
+    }
+    db.query(sqlKomentar, [id], (err2, komentarResult) => {
+      res.render('artikel-edit', {
+        artikelEdits: artikelResult,
+        komentars: komentarResult || []
+      });
+    });
+  });
+});
+
+// Proses Edit Artikel
+app.post('/artikel-edit', (req, res) => {
+  const { idEdit, judul, artikel } = req.body;
+  if (!idEdit || !judul || !artikel) {
+    return res.redirect('/artikel-kelola');
+  }
+  const idName = judul.trim().toLowerCase().split(/\s+/).join('-');
+  const artikelDepan = artikel.substring(0, 120) + (artikel.length > 120 ? ' ...' : '');
+  const sql = 'UPDATE artikel SET judul = ?, artikel = ?, idname = ?, artikelDepan = ? WHERE ID_artikel = ?';
+  db.query(sql, [judul, artikel, idName, artikelDepan, idEdit], (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Gagal update artikel');
+    }
+    res.redirect('/artikel-kelola');
+  });
+});
+
+// Delete Artikel + Komentar terkait
+app.post('/artikel-delete', (req, res) => {
+  const id = req.body.id;
+  if (!id) return res.redirect('/artikel-kelola');
+
+  db.query('DELETE FROM komentar WHERE ID_artikel = ?', [id], (err) => {
+    if (err) console.error(err);
+    db.query('DELETE FROM artikel WHERE ID_artikel = ?', [id], (err2) => {
+      if (err2) {
+        console.error(err2);
+        return res.status(500).send('Gagal hapus artikel');
+      }
+      res.redirect('/artikel-kelola');
+    });
+  });
+});
+
+// Delete Komentar
+app.post('/delete-komentar', (req, res) => {
+  const { id, id_artikel } = req.body;
+  if (!id) return res.redirect('/artikel-kelola');
+
+  db.query('DELETE FROM komentar WHERE id = ?', [id], (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Gagal hapus komentar');
+    }
+    if (id_artikel) {
+      return res.redirect(`/artikel-edit/${id_artikel}`);
+    }
+    res.redirect('/artikel-kelola');
+  });
+});
+
+// Start server
 const port = 3210;
-app.listen (port, ()=> {
-    console.log(`server berjalan di http://localhost:${port}`)
+app.listen(port, () => {
+  console.log(`Server berjalan di http://localhost:${port}`);
 });

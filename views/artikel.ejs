@@ -1,77 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
-    <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/album/">
-    <link href="/docs/5.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  </head>
-
-  <style>
-        
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artikel - Sekolah Tinggi JeWePe</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
 <body>
-  <header>
-    <div class="topnav" id="myTopnav">
-      <a href="/home" class="disable">Sekolah Tinggi JeWePe</a>
-      <a href="/home" class="navigasi">Home</a>
-      <a href="/artikel" class="pembatas disable">|</a>
-      <a href="/artikel" class="navigas1">Artikel</a>
-      <a href="/login" class="btn btn-primary">Login</a>
-      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-        <i class="fa fa-bars"></i>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="/home">
+        <i class="fas fa-graduation-cap me-2"></i>Sekolah Tinggi JeWePe
       </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/artikel">Artikel</a></li>
+          <li class="nav-item">
+            <a class="btn btn-light btn-sm px-3" href="/login"><i class="fas fa-sign-in-alt me-1"></i> Login</a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </header>
+  </nav>
 
-    <main>
-      <!-- Search -->
-        <section class="py-3 text-center container">
-                <form action="/artikel/search" method="post">
-                  <h1 class="fw-light mt-5">Search Artikel</h1>
-                    <div class="search input-group pt-3 align-items-center">
-                      <input type="text" class="" placeholder="Cari Artikel" name="searchArtikel" style="margin-left: 25%; width: 50%; height: 20;">
-                      <button class="btn-primary" type="submit" id="search">Search</button>
-                      <!-- <a href="/artikel/search" class="btn btn-primary text-light btn-sm" type="submit" id="search">Search</a> -->
-                    </div>
-                </form>
-          </section>
+  <main class="container py-4">
+    <!-- Search -->
+    <div class="search-box mb-5">
+      <form action="/artikel/search" method="post" class="input-group shadow-sm">
+        <input type="text" class="form-control form-control-lg" name="searchArtikel"
+               placeholder="Cari judul atau isi artikel..."
+               value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+        <button class="btn btn-primary px-4" type="submit">
+          <i class="fas fa-search"></i>
+        </button>
+      </form>
+    </div>
 
-          <!-- Artikel  -->
-          <div class="container">
-            <h1 class="text-center mt-5 py-3">Artikel</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold mb-0">
+        <i class="fas fa-newspaper text-primary me-2"></i>Daftar Artikel
+      </h2>
+      <span class="badge bg-secondary"><%= artikels.length %> artikel</span>
+    </div>
 
-            <% for (let artikel of artikels) { %>
-            <div class="card mb-3">
-              <!-- <img src="/uploads/<%= artikel.image %>" class="card-img-top" alt="/uploads/<%= artikel.image %>"> -->
-              <div class="card-body">
+    <% if (artikels.length === 0) { %>
+      <div class="empty-state">
+        <i class="fas fa-inbox fa-3x mb-3 text-secondary"></i>
+        <h5>Tidak ada artikel ditemukan</h5>
+        <p class="text-muted">Coba kata kunci lain atau kembali ke daftar lengkap.</p>
+        <a href="/artikel" class="btn btn-outline-primary">Lihat Semua</a>
+      </div>
+    <% } else { %>
+      <div class="row g-4">
+        <% artikels.forEach(function(artikel) { %>
+          <div class="col-md-6 col-lg-4">
+            <div class="card article-card h-100 shadow-sm">
+              <% if (artikel.image) { %>
+                <img src="/uploads/<%= artikel.image %>" class="card-img-top" alt="<%= artikel.judul %>"
+                     onerror="this.src='https://placehold.co/600x400?text=No+Image'">
+              <% } else { %>
+                <img src="https://placehold.co/600x400?text=No+Image" class="card-img-top" alt="No image">
+              <% } %>
+              <div class="card-body d-flex flex-column">
                 <h5 class="card-title"><%= artikel.judul %></h5>
-                <p class="card-text"><%= artikel.artikel.substring(0, 150) %> ...</p>
-                <div class="d-flex justify-content-end">
-                  <a href="/artikel-detail/<%= artikel.ID_artikel %>" class="btn btn-primary btn-sm" name ="id">Selengkapnya...</a>
-                </div>
+                <p class="card-text text-muted flex-grow-1">
+                  <%= (artikel.artikelDepan || artikel.artikel || '').substring(0, 120) %>...
+                </p>
+                <a href="/artikel-detail/<%= artikel.ID_artikel %>" class="btn btn-primary btn-sm align-self-start">
+                  Baca Selengkapnya <i class="fas fa-arrow-right ms-1"></i>
+                </a>
               </div>
             </div>
-            <% } %>
           </div>
-    </main>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
 
-    <footer class="py-3 my-4">
-        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-          <li class="nav-item"><a href="/home" class="nav-link px-2 text-muted">Home</a></li>
-          <li class="nav-item"><a href="/artikel" class="nav-link px-2 text-muted">Artikel</a></li>
-        </ul>
-        <p class="text-center text-muted">© 2023 Ilham Oktavian</p>
-    </footer>
+  <footer class="py-4">
+    <div class="container text-center">
+      <div class="mb-2">
+        <a href="/home" class="me-3">Home</a>
+        <a href="/artikel">Artikel</a>
+      </div>
+      <p class="mb-0 small">&copy; 2023–2025 Sekolah Tinggi JeWePe</p>
+    </div>
+  </footer>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="/script/navbar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
