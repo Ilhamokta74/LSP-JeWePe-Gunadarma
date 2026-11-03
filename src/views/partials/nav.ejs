@@ -1,0 +1,35 @@
+<% const p = currentPath || ''; const is = (s) => p === s || p.startsWith(s + '/'); %>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="<%= user ? '/home-admin' : '/home' %>">
+      <span class="brand-mark">JP</span>
+      <span class="brand-text">Sekolah Tinggi <strong>JeWePe</strong></span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Buka menu" aria-expanded="false" aria-controls="navMenu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-menu" id="navMenu">
+      <% if (user && admin) { %>
+        <a href="/home-admin" class="<%= p === '/home-admin' ? 'active' : '' %>">Dashboard</a>
+        <a href="/artikel-kelola" class="<%= (is('/artikel-kelola') || is('/artikel-edit') || is('/artikel-input')) ? 'active' : '' %>">Kelola Artikel</a>
+        <a href="/artikel" target="_blank" rel="noopener">Lihat Situs ↗</a>
+        <form action="/logout" method="post" class="inline" data-confirm="Keluar dari akun admin?" data-confirm-ok="Ya, keluar">
+          <input type="hidden" name="_csrf" value="<%= csrf %>">
+          <button class="btn btn-ghost btn-sm" type="submit">Logout</button>
+        </form>
+      <% } else { %>
+        <a href="/home" class="<%= (p === '/' || p === '/home') ? 'active' : '' %>">Beranda</a>
+        <a href="/artikel" class="<%= (is('/artikel') || is('/artikel-detail')) ? 'active' : '' %>">Artikel</a>
+        <% if (user) { %>
+          <a class="btn btn-primary btn-sm" href="/home-admin">Dashboard</a>
+        <% } else { %>
+          <a class="btn btn-primary btn-sm" href="/login">Login</a>
+        <% } %>
+      <% } %>
+    </nav>
+  </div>
+</header>
+<% if (flash) { %>
+  <div class="container"><div class="flash flash-<%= flash.type %>" role="status"><%= flash.message %></div></div>
+<% } %>
+<main id="main">

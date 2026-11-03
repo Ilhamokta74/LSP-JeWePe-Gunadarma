@@ -1,0 +1,45 @@
+<%- include('partials/head', { title: 'Kelola Artikel' }) %>
+<%- include('partials/nav', { admin: true }) %>
+<section class="container section">
+  <div class="section-head">
+    <div>
+      <h1>Kelola Artikel</h1>
+      <p class="muted"><%= artikels.length %> artikel</p>
+    </div>
+    <a class="btn btn-primary" href="/artikel-input">+ Artikel baru</a>
+  </div>
+
+  <% if (artikels.length) { %>
+    <div class="card table-wrap">
+      <div class="table-tools"><input type="search" id="tableFilter" placeholder="Filter judul…" aria-label="Filter judul"></div>
+      <table class="table" id="artikelTable">
+        <thead><tr><th>ID</th><th>Artikel</th><th class="c">Komentar</th><th class="r">Aksi</th></tr></thead>
+        <tbody>
+          <% artikels.forEach(a => { %>
+            <tr>
+              <td data-label="ID"><%= a.ID_artikel %></td>
+              <td data-label="Artikel">
+                <div class="cell-post">
+                  <img src="/uploads/<%= a.image %>" alt="" loading="lazy" onerror="this.onerror=null;this.src='/gunadarma.jpeg'">
+                  <a href="/artikel-detail/<%= a.ID_artikel %>" target="_blank" rel="noopener"><%= a.judul %></a>
+                </div>
+              </td>
+              <td data-label="Komentar" class="c"><%= a.jumlahKomentar %></td>
+              <td class="r actions">
+                <a class="btn btn-outline btn-sm" href="/artikel-edit/<%= a.ID_artikel %>">Edit</a>
+                <form action="/artikel-delete" method="post" class="inline" data-confirm="Hapus “<%= a.judul %>” beserta komentarnya? Tindakan ini tidak bisa dibatalkan." data-confirm-ok="Ya, hapus" data-danger>
+                  <input type="hidden" name="_csrf" value="<%= csrf %>">
+                  <input type="hidden" name="id" value="<%= a.ID_artikel %>">
+                  <button class="btn btn-danger btn-sm" type="submit">Hapus</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } else { %>
+    <div class="empty"><h3>Belum ada artikel</h3><p class="muted">Mulai dengan membuat artikel pertama.</p><a class="btn btn-primary" href="/artikel-input">Buat artikel</a></div>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

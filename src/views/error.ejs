@@ -1,0 +1,9 @@
+<%- include('partials/head', { title: code }) %>
+<%- include('partials/nav', { admin: false }) %>
+<section class="container section error-page">
+  <p class="eyebrow"><%= code %></p>
+  <h1><%= code === 404 ? 'Halaman tidak ditemukan' : 'Terjadi kesalahan' %></h1>
+  <p class="muted"><%= message %></p>
+  <a class="btn btn-primary" href="/home">Kembali ke beranda</a>
+</section>
+<%- include('partials/footer') %>

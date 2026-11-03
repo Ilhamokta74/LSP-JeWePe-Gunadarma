@@ -1,0 +1,28 @@
+<%- include('partials/head', { title: 'Artikel Baru' }) %>
+<%- include('partials/nav', { admin: true }) %>
+<section class="container section narrow">
+  <a class="link-arrow back" href="/artikel-kelola">← Kembali</a>
+  <h1>Artikel baru</h1>
+  <form class="card form" action="/artikel-input" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <div class="field">
+      <label for="judul">Judul</label>
+      <input id="judul" type="text" name="judul" value="<%= form.judul %>" placeholder="Judul artikel" required>
+    </div>
+    <div class="field">
+      <label for="image">Gambar sampul</label>
+      <input id="image" type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" required data-preview="#preview">
+      <small class="hint">JPG, PNG, WebP, atau GIF · maks. 5 MB.</small>
+      <img id="preview" class="preview" alt="Pratinjau gambar" hidden>
+    </div>
+    <div class="field">
+      <label for="artikel">Isi artikel</label>
+      <textarea id="artikel" name="artikel" rows="14" placeholder="Tulis isi artikel di sini…" required><%= form.artikel %></textarea>
+    </div>
+    <div class="form-actions">
+      <a class="btn btn-outline" href="/artikel-kelola">Batal</a>
+      <button class="btn btn-primary" type="submit">Publikasikan</button>
+    </div>
+  </form>
+</section>
+<%- include('partials/footer') %>

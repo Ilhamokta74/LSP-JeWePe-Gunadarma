@@ -1,0 +1,26 @@
+<%- include('partials/head', { title: 'Login' }) %>
+<%- include('partials/nav', { admin: false }) %>
+<section class="auth">
+  <div class="auth-card card">
+    <span class="brand-mark big">JP</span>
+    <h1>Masuk Admin</h1>
+    <p class="muted">Gunakan akun admin untuk mengelola artikel.</p>
+    <form action="/login" method="post" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" value="<%= email %>" placeholder="nama@email.com" autocomplete="username" required autofocus>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="pw">
+          <input id="password" type="password" name="password" placeholder="Password" autocomplete="current-password" required>
+          <button type="button" class="pw-toggle" data-toggle-pw aria-label="Tampilkan password">Lihat</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Masuk</button>
+    </form>
+    <a class="link-arrow back" href="/home">← Kembali ke beranda</a>
+  </div>
+</section>
+<%- include('partials/footer') %>

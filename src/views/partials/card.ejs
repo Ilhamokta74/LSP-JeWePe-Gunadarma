@@ -1,0 +1,10 @@
+<article class="card post">
+  <a class="post-img" href="/artikel-detail/<%= a.ID_artikel %>" tabindex="-1" aria-hidden="true">
+    <img src="/uploads/<%= a.image %>" alt="" loading="lazy" onerror="this.onerror=null;this.src='/gunadarma.jpeg'">
+  </a>
+  <div class="post-body">
+    <h3><a href="/artikel-detail/<%= a.ID_artikel %>"><%= a.judul %></a></h3>
+    <% if (a.artikel) { %><p><%= excerpt(a.artikel, 120) %></p><% } %>
+    <a class="link-arrow" href="/artikel-detail/<%= a.ID_artikel %>">Baca selengkapnya →</a>
+  </div>
+</article>

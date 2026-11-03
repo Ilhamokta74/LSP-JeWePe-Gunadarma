@@ -1,0 +1,41 @@
+<%- include('partials/head', { title: 'Beranda' }) %>
+<%- include('partials/nav', { admin: false }) %>
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Portal Kampus</span>
+      <h1>Selamat datang di <span class="grad">Sekolah Tinggi JeWePe</span></h1>
+      <p class="lead">Baca kabar, pengetahuan, dan tulisan terbaru dari lingkungan kampus — dalam satu tempat yang rapi dan mudah dicari.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/artikel">Jelajahi Artikel</a>
+        <a class="btn btn-outline" href="/login">Masuk Admin</a>
+      </div>
+      <dl class="hero-stats">
+        <div><dt><%= total %></dt><dd>Artikel terbit</dd></div>
+        <div><dt>24/7</dt><dd>Dapat diakses</dd></div>
+      </dl>
+    </div>
+    <div class="hero-media">
+      <img src="/gunadarma.jpeg" alt="Gedung kampus" width="700" height="447">
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Artikel terbaru</h2>
+      <a class="link-arrow" href="/artikel">Lihat semua →</a>
+    </div>
+    <% if (latest.length) { %>
+      <div class="grid">
+        <% latest.forEach(a => { %>
+          <%- include('partials/card', { a }) %>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="empty"><p>Belum ada artikel yang dipublikasikan.</p></div>
+    <% } %>
+  </div>
+</section>
+<%- include('partials/footer') %>

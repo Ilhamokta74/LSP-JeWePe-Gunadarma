@@ -1,0 +1,53 @@
+<%- include('partials/head', { title: 'Edit Artikel' }) %>
+<%- include('partials/nav', { admin: true }) %>
+<section class="container section narrow">
+  <a class="link-arrow back" href="/artikel-kelola">← Kembali</a>
+  <h1>Edit artikel <span class="muted">#<%= artikel.ID_artikel %></span></h1>
+  <form class="card form" action="/artikel-edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <input type="hidden" name="idEdit" value="<%= artikel.ID_artikel %>">
+    <div class="field">
+      <label for="judul">Judul</label>
+      <input id="judul" type="text" name="judul" value="<%= artikel.judul %>" required>
+    </div>
+    <div class="field">
+      <label for="image">Gambar sampul</label>
+      <img id="preview" class="preview" src="/uploads/<%= artikel.image %>" alt="Gambar saat ini" onerror="this.onerror=null;this.src='/gunadarma.jpeg'">
+      <input id="image" type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" data-preview="#preview">
+      <small class="hint">Kosongkan jika tidak ingin mengganti gambar.</small>
+    </div>
+    <div class="field">
+      <label for="artikel">Isi artikel</label>
+      <textarea id="artikel" name="artikel" rows="14" required><%= artikel.artikel %></textarea>
+    </div>
+    <div class="form-actions">
+      <a class="btn btn-outline" href="/artikel-kelola">Batal</a>
+      <button class="btn btn-primary" type="submit">Simpan perubahan</button>
+    </div>
+  </form>
+
+  <div id="komentar" class="comments">
+    <h2>Komentar <span class="count"><%= komentars.length %></span></h2>
+    <% if (komentars.length) { %>
+      <ul class="comment-list">
+        <% komentars.forEach(k => { %>
+          <li class="comment">
+            <span class="avatar" aria-hidden="true"><%= (k.nama || '?').trim().charAt(0).toUpperCase() %></span>
+            <div class="grow">
+              <strong><%= k.nama %></strong> <span class="muted small"><%= k.email %></span>
+              <p><%= k.komentar %></p>
+            </div>
+            <form action="/delete-komentar" method="post" class="inline" data-confirm="Hapus komentar dari <%= k.nama %>?" data-confirm-ok="Ya, hapus" data-danger>
+              <input type="hidden" name="_csrf" value="<%= csrf %>">
+              <input type="hidden" name="id" value="<%= k.id %>">
+              <button class="btn btn-danger btn-sm" type="submit">Hapus</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p class="muted">Belum ada komentar.</p>
+    <% } %>
+  </div>
+</section>
+<%- include('partials/footer') %>

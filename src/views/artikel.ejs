@@ -1,0 +1,39 @@
+<%- include('partials/head', { title: q ? 'Cari: ' + q : 'Artikel' }) %>
+<%- include('partials/nav', { admin: false }) %>
+<section class="page-head">
+  <div class="container">
+    <h1>Artikel</h1>
+    <p class="muted">Temukan tulisan dan informasi terbaru.</p>
+    <form class="search" action="/artikel" method="get" role="search">
+      <input type="search" name="q" value="<%= q %>" placeholder="Cari judul atau isi artikel…" aria-label="Cari artikel" maxlength="100">
+      <button class="btn btn-primary" type="submit">Cari</button>
+    </form>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <% if (q) { %>
+      <p class="result-info"><strong><%= total %></strong> hasil untuk “<%= q %>” · <a href="/artikel">Hapus pencarian</a></p>
+    <% } %>
+    <% if (artikels.length) { %>
+      <div class="grid">
+        <% artikels.forEach(a => { %><%- include('partials/card', { a }) %><% }) %>
+      </div>
+      <% if (pages > 1) { %>
+        <nav class="pager" aria-label="Halaman">
+          <% const qs = (n) => '/artikel?' + (q ? 'q=' + encodeURIComponent(q) + '&' : '') + 'page=' + n; %>
+          <a class="btn btn-outline btn-sm <%= page <= 1 ? 'disabled' : '' %>" href="<%= qs(page - 1) %>" <%= page <= 1 ? 'aria-disabled=true tabindex=-1' : '' %>>← Sebelumnya</a>
+          <span>Halaman <%= page %> dari <%= pages %></span>
+          <a class="btn btn-outline btn-sm <%= page >= pages ? 'disabled' : '' %>" href="<%= qs(page + 1) %>" <%= page >= pages ? 'aria-disabled=true tabindex=-1' : '' %>>Berikutnya →</a>
+        </nav>
+      <% } %>
+    <% } else { %>
+      <div class="empty">
+        <h3>Tidak ada artikel ditemukan</h3>
+        <p class="muted"><%= q ? 'Coba kata kunci lain.' : 'Belum ada artikel yang dipublikasikan.' %></p>
+      </div>
+    <% } %>
+  </div>
+</section>
+<%- include('partials/footer') %>

@@ -1,0 +1,61 @@
+<%- include('partials/head', { title: artikel.judul }) %>
+<%- include('partials/nav', { admin: false }) %>
+<article class="container article">
+  <a class="link-arrow back" href="/artikel">← Kembali ke artikel</a>
+  <h1><%= artikel.judul %></h1>
+  <figure class="article-cover">
+    <img src="/uploads/<%= artikel.image %>" alt="<%= artikel.judul %>" onerror="this.onerror=null;this.src='/gunadarma.jpeg'">
+  </figure>
+  <div class="prose"><%= artikel.artikel %></div>
+</article>
+
+<section class="container comments" id="komentar">
+  <h2>Komentar <span class="count"><%= komentars.length %></span></h2>
+
+  <% if (komentars.length) { %>
+    <ul class="comment-list">
+      <% komentars.forEach(k => { %>
+        <li class="comment">
+          <span class="avatar" aria-hidden="true"><%= (k.nama || '?').trim().charAt(0).toUpperCase() %></span>
+          <div>
+            <strong><%= k.nama %></strong>
+            <p><%= k.komentar %></p>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p class="muted">Belum ada komentar. Jadilah yang pertama!</p>
+  <% } %>
+
+  <form class="card form" action="/input-komentar" method="post" novalidate>
+    <h3>Tulis komentar</h3>
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <input type="hidden" name="id" value="<%= artikel.ID_artikel %>">
+    <div class="row-2">
+      <div class="field">
+        <label for="komentarNama">Nama</label>
+        <input id="komentarNama" type="text" name="komentarNama" placeholder="Nama Anda" maxlength="100" required>
+      </div>
+      <div class="field">
+        <label for="komentarEmail">Email</label>
+        <input id="komentarEmail" type="email" name="komentarEmail" placeholder="nama@email.com" maxlength="32" required>
+        <small class="hint">Tidak akan ditampilkan.</small>
+      </div>
+    </div>
+    <div class="field">
+      <label for="komentar">Komentar</label>
+      <textarea id="komentar" name="komentar" rows="4" maxlength="150" placeholder="Tulis komentar Anda…" required data-counter></textarea>
+      <small class="hint counter"></small>
+    </div>
+    <div class="form-actions"><button class="btn btn-primary" type="submit">Kirim komentar</button></div>
+  </form>
+
+  <% if (related.length) { %>
+    <h2 class="related-title">Artikel lainnya</h2>
+    <div class="grid">
+      <% related.forEach(a => { %><%- include('partials/card', { a }) %><% }) %>
+    </div>
+  <% } %>
+</section>
+<%- include('partials/footer') %>
